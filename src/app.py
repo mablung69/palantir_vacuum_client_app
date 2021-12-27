@@ -9,3 +9,5 @@ ir_control = IRControl()
 client = STDINClient(ir_control)
 
 client.listen()
+
+ir_control.destroy()

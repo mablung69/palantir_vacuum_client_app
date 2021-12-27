@@ -1,5 +1,6 @@
 """Class member on client module."""
 import sys
+from time import sleep
 from select import select
 
 class STDINClient:
@@ -14,6 +15,14 @@ class STDINClient:
             "down": "down",
             "left": "left",
             "right": "right",
+            "t": "test1",
+            "p": "test2",
+            "o":"test3",
+            "w":["mode5","PIN_16"],
+            "a":["mode5","PIN_15"],
+            "d":["mode5","PIN_13"],
+            "q":["mode5","PIN_11"],
+            "s":["mode5","PIN_18"],
             "exit": "exit"
         }
 
@@ -37,6 +46,19 @@ class STDINClient:
                     print("Invalid Command!")
                 elif action == "exit":
                     break
+                elif action == "test1":
+                    self.control.send("up")
+                    sleep(0.5)
+                    self.control.send("up")
+                    sleep(0.5)
+                    self.control.send("up")
+                    sleep(0.5)
+                    self.control.send("up")
+                    sleep(0.5)
+                    self.control.send("up")
+                elif type(action) is list:
+                    #call action using mode and pin
+                    self.control.send(action[0],action[1])
                 else:
                     #call action
                     self.control.send(action)
