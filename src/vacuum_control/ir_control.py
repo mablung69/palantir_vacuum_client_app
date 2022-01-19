@@ -8,33 +8,38 @@ class IRControl:
 
     def __init__(self):
         """ """
-        self.IR_PIN = 11 #In physical Pin 11
+        self.modes = {
+            "base": [1000,-1000],
+            "mode1": [50000,-50000],
+            "mode2": [100000,-100000],
+            "mode3": [10000,-10000],
+            "mode4": [5000,-5000]
+        }
         self.action_pin = {
-            "PIN_11": 11,
-            "PIN_13": 13,
-            "PIN_15": 15,
-            "PIN_16": 16,
-            "PIN_18": 18
+            "PIN_11": 11,#In physical Pin 11
+            "PIN_13": 13,#In physical Pin 13
+            "PIN_15": 15,#In physical Pin 15
+            "PIN_16": 16,#In physical Pin 16
+            "PIN_18": 18 #In physical Pin 18
+        }
+        self.action_dict = {
+            "up": {"pin": "PIN_16", "mode":"base"},
+            "left": {"pin": "PIN_15", "mode":"base"},
+            "right": {"pin": "PIN_13", "mode":"base"},
+            "play-stop": {"pin": "PIN_11", "mode":"base"},
+            "down": {"pin": "PIN_18", "mode":"base"}
         }
         GPIO.setmode(GPIO.BOARD)
         for pin in self.action_pin.keys():
             GPIO.setup(self.action_pin[pin], GPIO.OUT)
             GPIO.output(self.action_pin[pin], False)
-        ir_dict_path="../data/ir_dict.json"
-        with open(ir_dict_path) as json_file:
-            self.ir_dict = json.load(json_file)
-        self.ir_dict["mode1"] = [50000,-50000]        
-        self.ir_dict["mode2"] = [100000,-100000]
-        self.ir_dict["mode3"] = [10000,-10000]
-        self.ir_dict["mode4"] = [5000,-5000]
-        self.ir_dict["mode5"] = [1000,-1000]
-        self.ir_dict["test3"] = [100000,-100000,100000,-100000]
 
-    def send(self, mode, action="PIN_11"):
+    def send(self, action):
         """ """
         #send action
-        pin = self.action_pin[action]
-        for interval in self.ir_dict[mode]:
+        action_object = self.action_dict[action]
+        pin = self.action_pin[action_object["pin"]]
+        for interval in self.modes[action_object["mode"]]:
             state = True if interval>0 else False
             duration = interval if interval>=0 else -interval
             GPIO.output(pin, state)
